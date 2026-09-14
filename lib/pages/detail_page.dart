@@ -62,7 +62,7 @@ class _DetailPageState extends State<DetailPage> {
             'Yakin ingin menghapus artikel ini?',
           ),
           actions: [
-            // Tombol batal
+            // tombol batal
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -105,8 +105,6 @@ class _DetailPageState extends State<DetailPage> {
       ),
     );
 
-    // Kalau artikel berhasil diedit,
-    // kembali ke Home untuk mengambil data terbaru
     if (result == true && mounted) {
       Navigator.pop(context, true);
     }
@@ -117,7 +115,7 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       backgroundColor: const Color(0xfffafafa),
 
-      // Navbar atas
+      // Navbar 1
       appBar: AppBar(
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
@@ -140,14 +138,12 @@ class _DetailPageState extends State<DetailPage> {
 
         // Tombol Edit dan Delete
         actions: [
-          // Tombol Edit
           IconButton(
             icon: const Icon(Icons.edit_outlined),
             tooltip: 'Edit Artikel',
             onPressed: editPost,
           ),
-
-          // Tombol Delete
+          
           IconButton(
             icon: const Icon(Icons.delete_outline),
             tooltip: 'Hapus Artikel',

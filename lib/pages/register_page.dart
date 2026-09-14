@@ -1,6 +1,5 @@
 // Halaman Register MotoBlog
 import 'package:flutter/material.dart';
-
 import 'login_page.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -156,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
       body: SafeArea(
         child: Stack(
           children: [
-            // Dekorasi merah muda bagian bawah
+            // Dekorasi merah di bawah
             Positioned(
               bottom: -100,
               left: -80,
@@ -249,7 +248,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   const SizedBox(height: 35),
 
-                  // Input username
                   inputField(
                     controller: usernameController,
                     hint: 'Username',
@@ -258,7 +256,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   const SizedBox(height: 15),
 
-                  // Input password
                   inputField(
                     controller: passwordController,
                     hint: 'Password',
@@ -274,8 +271,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
 
                   const SizedBox(height: 15),
-
-                  // Input konfirmasi password
                   inputField(
                     controller: confirmPasswordController,
                     hint: 'Confirm Password',
