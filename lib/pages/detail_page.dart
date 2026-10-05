@@ -1,4 +1,5 @@
 // Halaman Detail Artikel MotoBlog
+
 import 'package:flutter/material.dart';
 
 import '../models/post.dart';
@@ -62,7 +63,7 @@ class _DetailPageState extends State<DetailPage> {
             'Yakin ingin menghapus artikel ini?',
           ),
           actions: [
-            // tombol batal
+            // Tombol batal
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -112,10 +113,49 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    // ============================================================
+    // RESPONSIVE: MediaQuery
+    // Digunakan untuk mengetahui ukuran layar perangkat.
+    // ============================================================
+    final screenWidth = MediaQuery.sizeOf(context).width;
+
+    // Di bawah 600 px dianggap mobile,
+    // sedangkan 600 px ke atas dianggap desktop/web.
+    final isMobile = screenWidth < 600;
+
+    // ============================================================
+    // RESPONSIVE: Ukuran padding
+    // Padding dibuat lebih kecil di mobile dan lebih besar di desktop.
+    // ============================================================
+    final horizontalPadding = isMobile ? 20.0 : 60.0;
+
+    // ============================================================
+    // RESPONSIVE: Ukuran gambar
+    // Tinggi gambar menyesuaikan ukuran layar.
+    // ============================================================
+    final imageHeight = isMobile ? 230.0 : 380.0;
+
+    // ============================================================
+    // RESPONSIVE: Ukuran judul
+    // ============================================================
+    final titleFontSize = isMobile ? 27.0 : 34.0;
+
+    // ============================================================
+    // RESPONSIVE: Lebar konten
+    // Desktop dibuat tidak terlalu melebar agar nyaman dibaca.
+    // ============================================================
+    final contentWidth = isMobile
+        ? double.infinity
+        : screenWidth > 1000
+            ? 850.0
+            : screenWidth - 120;
+
     return Scaffold(
       backgroundColor: const Color(0xfffafafa),
 
-      // Navbar 1
+      // ============================================================
+      // APP BAR
+      // ============================================================
       appBar: AppBar(
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
@@ -143,7 +183,6 @@ class _DetailPageState extends State<DetailPage> {
             tooltip: 'Edit Artikel',
             onPressed: editPost,
           ),
-          
           IconButton(
             icon: const Icon(Icons.delete_outline),
             tooltip: 'Hapus Artikel',
@@ -152,157 +191,195 @@ class _DetailPageState extends State<DetailPage> {
         ],
       ),
 
-      // Isi halaman
+      // ============================================================
+      // ISI HALAMAN
+      // ============================================================
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Foto artikel
-            if (widget.post.imageUrl != null &&
-                widget.post.imageUrl!.isNotEmpty)
-              SizedBox(
-                width: double.infinity,
-                height: 300,
-                child: Image.network(
-                  widget.post.imageUrl!,
-                  fit: BoxFit.cover,
+            // ========================================================
+            // RESPONSIVE: LayoutBuilder
+            // Membatasi lebar konten ketika dibuka di desktop/web.
+            // ========================================================
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return SizedBox(
+                  width: contentWidth,
 
-                  // Jika gambar gagal dimuat
-                  errorBuilder: (
-                    context,
-                    error,
-                    stackTrace,
-                  ) {
-                    return Container(
-                      color: Colors.grey.shade200,
-                      child: const Center(
-                        child: Icon(
-                          Icons.image_not_supported_outlined,
-                          size: 60,
-                          color: Colors.grey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ==================================================
+                      // FOTO ARTIKEL
+                      // ==================================================
+                      if (widget.post.imageUrl != null &&
+                          widget.post.imageUrl!.isNotEmpty)
+                        SizedBox(
+                          width: double.infinity,
+                          height: imageHeight,
+                          child: Image.network(
+                            widget.post.imageUrl!,
+                            fit: BoxFit.cover,
+
+                            // Jika gambar gagal dimuat
+                            errorBuilder: (
+                              context,
+                              error,
+                              stackTrace,
+                            ) {
+                              return Container(
+                                color: Colors.grey.shade200,
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.image_not_supported_outlined,
+                                    size: 60,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+
+                      // ==================================================
+                      // ISI ARTIKEL
+                      // ==================================================
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding,
+                          vertical: 25,
+                        ),
+                        child: Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                          children: [
+                            // Kategori
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 7,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xffffe5e5),
+                                borderRadius:
+                                    BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                widget.post.categoryName,
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 15),
+
+                            // ==================================================
+                            // RESPONSIVE: Judul Artikel
+                            // ==================================================
+                            Text(
+                              widget.post.title,
+                              style: TextStyle(
+                                fontSize: titleFontSize,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xff202124),
+                              ),
+                            ),
+
+                            const SizedBox(height: 18),
+
+                            // Isi artikel
+                            Text(
+                              widget.post.content,
+                              style: TextStyle(
+                                fontSize: isMobile ? 16 : 17,
+                                height: 1.7,
+                                color: const Color(0xff444444),
+                              ),
+                            ),
+
+                            const SizedBox(height: 35),
+
+                            // ==================================================
+                            // RESPONSIVE: Tombol
+                            // Lebar tombol mengikuti lebar layar/konten.
+                            // ==================================================
+
+                            // Tombol Edit
+                            SizedBox(
+                              width: double.infinity,
+                              height: isMobile ? 52 : 56,
+                              child: OutlinedButton.icon(
+                                onPressed: editPost,
+                                icon: const Icon(
+                                  Icons.edit_outlined,
+                                  color: Colors.red,
+                                ),
+                                label: const Text(
+                                  'Edit Artikel',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                    color: Colors.red,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(14),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            // Tombol Delete
+                            SizedBox(
+                              width: double.infinity,
+                              height: isMobile ? 52 : 56,
+                              child: OutlinedButton.icon(
+                                onPressed: isDeleting
+                                    ? null
+                                    : showDeleteDialog,
+                                icon: const Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.red,
+                                ),
+                                label: Text(
+                                  isDeleting
+                                      ? 'Menghapus...'
+                                      : 'Hapus Artikel',
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                    color: Colors.red,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(14),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 30),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                ),
-              ),
-
-            // Isi artikel
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Kategori
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 7,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xffffe5e5),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      widget.post.categoryName,
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                      ),
-                    ),
+                    ],
                   ),
-
-                  const SizedBox(height: 15),
-
-                  // Judul artikel
-                  Text(
-                    widget.post.title,
-                    style: const TextStyle(
-                      fontSize: 27,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xff202124),
-                    ),
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  // Isi artikel
-                  Text(
-                    widget.post.content,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      height: 1.7,
-                      color: Color(0xff444444),
-                    ),
-                  ),
-
-                  const SizedBox(height: 35),
-
-                  // Tombol Edit
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: OutlinedButton.icon(
-                      onPressed: editPost,
-                      icon: const Icon(
-                        Icons.edit_outlined,
-                        color: Colors.red,
-                      ),
-                      label: const Text(
-                        'Edit Artikel',
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 15,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Colors.red,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // Tombol Delete
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: OutlinedButton.icon(
-                      onPressed:
-                          isDeleting ? null : showDeleteDialog,
-                      icon: const Icon(
-                        Icons.delete_outline,
-                        color: Colors.red,
-                      ),
-                      label: Text(
-                        isDeleting
-                            ? 'Menghapus...'
-                            : 'Hapus Artikel',
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 15,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Colors.red,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-                ],
-              ),
+                );
+              },
             ),
           ],
         ),

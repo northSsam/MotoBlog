@@ -1,4 +1,5 @@
 // Halaman Login MotoBlog
+
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
@@ -31,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
           content: Text('Username dan password wajib diisi'),
         ),
       );
+
       return;
     }
 
@@ -54,6 +56,21 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // ===== RESPONSIVE: MediaQuery =====
+    // Mengambil ukuran layar.
+    final screenWidth = MediaQuery.sizeOf(context).width;
+
+    // ===== RESPONSIVE: LayoutBuilder =====
+    // Menentukan apakah tampilan mobile atau desktop/web.
+    final isMobile = screenWidth < 600;
+
+    // Lebar form menyesuaikan ukuran layar.
+    final formWidth = isMobile
+        ? screenWidth * 0.88
+        : screenWidth >= 1000
+            ? 480.0
+            : 430.0;
+
     return Scaffold(
       backgroundColor: const Color(0xfffafafa),
 
@@ -65,8 +82,8 @@ class _LoginPageState extends State<LoginPage> {
               bottom: -100,
               left: -80,
               child: Container(
-                width: 300,
-                height: 250,
+                width: isMobile ? 300 : 400,
+                height: isMobile ? 250 : 320,
                 decoration: BoxDecoration(
                   color: const Color(0xffffeeee),
                   borderRadius: BorderRadius.circular(150),
@@ -77,221 +94,258 @@ class _LoginPageState extends State<LoginPage> {
             // Isi halaman
             Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
+                // ===== RESPONSIVE: MediaQuery =====
+                // Padding menyesuaikan ukuran layar.
+                padding: EdgeInsets.symmetric(
+                  horizontal: isMobile ? 20 : 30,
+                  vertical: 20,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Logo motor sederhana
-                    Container(
-                      width: 90,
-                      height: 90,
-                      decoration: BoxDecoration(
-                        color: const Color(0xffffe5e5),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.two_wheeler,
-                        size: 55,
-                        color: Colors.red,
-                      ),
-                    ),
 
-                    const SizedBox(height: 18),
+                child: SizedBox(
+                  // ===== RESPONSIVE: MediaQuery =====
+                  // Form tidak terlalu lebar di desktop.
+                  width: formWidth,
 
-                    // Nama aplikasi
-                    RichText(
-                      text: const TextSpan(
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Logo motor sederhana
+                      Container(
+                        // ===== RESPONSIVE: MediaQuery =====
+                        width: isMobile ? 90 : 105,
+                        height: isMobile ? 90 : 105,
+                        decoration: BoxDecoration(
+                          color: const Color(0xffffe5e5),
+                          shape: BoxShape.circle,
                         ),
-                        children: [
-                          TextSpan(
-                            text: 'Moto',
+                        child: Icon(
+                          Icons.two_wheeler,
+                          size: isMobile ? 55 : 65,
+                          color: Colors.red,
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: isMobile ? 18 : 22,
+                      ),
+
+                      // Nama aplikasi
+                      // ===== RESPONSIVE: FittedBox =====
+                      // Supaya tulisan tidak overflow pada layar kecil.
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: RichText(
+                          text: TextSpan(
                             style: TextStyle(
-                              color: Color(0xff202124),
+                              fontSize: isMobile ? 32 : 38,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          TextSpan(
-                            text: 'Blog',
-                            style: TextStyle(
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    // Deskripsi
-                    const Text(
-                      'Informasi dan tips seputar dunia motor',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                      ),
-                    ),
-
-                    const SizedBox(height: 40),
-
-                    // Input username
-                    TextField(
-                      controller: usernameController,
-                      style: const TextStyle(
-                        color: Colors.black,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'Username',
-                        prefixIcon: const Icon(
-                          Icons.person_outline,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 17,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(
-                            color: Color(0xffdddddd),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(
-                            color: Color(0xffdddddd),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(
-                            color: Colors.red,
-                            width: 1.5,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 15),
-
-                    // Input password
-                    TextField(
-                      controller: passwordController,
-                      obscureText: !isPasswordVisible,
-                      style: const TextStyle(
-                        color: Colors.black,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'Password',
-                        prefixIcon: const Icon(
-                          Icons.lock_outline,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            isPasswordVisible
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              isPasswordVisible =
-                                  !isPasswordVisible;
-                            });
-                          },
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 17,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(
-                            color: Color(0xffdddddd),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(
-                            color: Color(0xffdddddd),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(
-                            color: Colors.red,
-                            width: 1.5,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 25),
-
-                    // Tombol Login
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: login,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 22),
-
-                    // Link Register
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Belum punya akun? ',
-                          style: TextStyle(
-                            color: Color(0xff444444),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            // Membuka halaman Register
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const RegisterPage(),
+                            children: const [
+                              TextSpan(
+                                text: 'Moto',
+                                style: TextStyle(
+                                  color: Color(0xff202124),
+                                ),
                               ),
-                            );
-                          },
-                          child: const Text(
-                            'Register',
-                            style: TextStyle(
+                              TextSpan(
+                                text: 'Blog',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // Deskripsi
+                      // ===== RESPONSIVE: Flexible =====
+                      Flexible(
+                        child: Text(
+                          'Informasi dan tips seputar dunia motor',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: isMobile ? 14 : 16,
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: isMobile ? 35 : 45,
+                      ),
+
+                      // Input username
+                      TextField(
+                        controller: usernameController,
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Username',
+                          prefixIcon: const Icon(
+                            Icons.person_outline,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+
+                          // ===== RESPONSIVE: MediaQuery =====
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: isMobile ? 17 : 19,
+                          ),
+
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(
+                              color: Color(0xffdddddd),
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(
+                              color: Color(0xffdddddd),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(
                               color: Colors.red,
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 15),
+
+                      // Input password
+                      TextField(
+                        controller: passwordController,
+                        obscureText: !isPasswordVisible,
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          prefixIcon: const Icon(
+                            Icons.lock_outline,
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              isPasswordVisible
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isPasswordVisible =
+                                    !isPasswordVisible;
+                              });
+                            },
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+
+                          // ===== RESPONSIVE: MediaQuery =====
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: isMobile ? 17 : 19,
+                          ),
+
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(
+                              color: Color(0xffdddddd),
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(
+                              color: Color(0xffdddddd),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(
+                              color: Colors.red,
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: isMobile ? 25 : 30,
+                      ),
+
+                      // Tombol Login
+                      // ===== RESPONSIVE: Expanded =====
+                      SizedBox(
+                        width: double.infinity,
+                        height: isMobile ? 52 : 56,
+                        child: ElevatedButton(
+                          onPressed: login,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(14),
+                            ),
+                          ),
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
 
-                    const SizedBox(height: 20),
-                  ],
+                      const SizedBox(height: 22),
+
+                      // Link Register
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // ===== RESPONSIVE: Flexible =====
+                          Flexible(
+                            child: const Text(
+                              'Belum punya akun? ',
+                              style: TextStyle(
+                                color: Color(0xff444444),
+                              ),
+                            ),
+                          ),
+
+                          GestureDetector(
+                            onTap: () {
+                              // Membuka halaman Register
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const RegisterPage(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Register',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
             ),
